@@ -1,0 +1,11 @@
+/* custom.css */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;700&display=swap');
+
+/* กำหนดฟอนต์สำหรับทั้งระบบ */
+body, html {
+    font-family: 'Kanit', sans-serif !important;
+}
+
+.navbar, .sidebar, .footer, .content-wrapper {
+    font-family: 'Kanit', sans-serif !important;
+}

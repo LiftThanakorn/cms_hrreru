@@ -1,0 +1,139 @@
+ฐานข้อมูล: cms_hrreru
+
+ตาราง:
+1. users
+   - user_id
+   - username
+   - password
+   - email
+   - role (เช่น admin, user)
+   - created_at
+   - updated_at
+
+2. posts
+   - post_id 
+   - title
+   - content
+   - user_id (foreign key อ้างอิง users.user_id)
+   - category_id (foreign key อ้างอิง categories.category_id)
+   - tags (ใช้ตาราง pivotเพื่อเก็บ post-tag relationship)
+   - status (เช่น draft, published)
+   - created_at
+   - updated_at
+
+3. categories
+   - category_id
+   - name
+   - slug
+   - parent_id (nullable, เพื่อเก็บหมวดหมู่แบบ hierarchical)
+   - created_at
+   - updated_at
+
+4. tags
+   - tag_id
+   - name 
+   - slug
+   - created_at
+   - updated_at
+
+5. post_tag (tabel pivot สำหรับ posts-tags relationship)
+   - post_id (foreign key อ้างอิง posts.post_id)
+   - tag_id (foreign key อ้างอิง tags.tag_id)
+
+6. media
+   - media_id
+   - filename
+   - file_type
+   - file_size
+   - user_id (foreign key อ้างอิง users.user_id) 
+   - created_at
+   - updated_at
+
+7. activity_logs
+   - log_id
+   - user_id (foreign key อ้างอิง users.user_id)
+   - action (เช่น create, update, delete)
+   - target_type (เช่น post, user, media)
+   - target_id
+   - created_at
+
+8.CREATE TABLE post_media (
+    post_id INT,
+    media_id INT,
+    is_featured BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (post_id, media_id),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id),
+    FOREIGN KEY (media_id) REFERENCES media(media_id)
+);
+CREATE DATABASE cms_hrreru;
+
+USE cms_hrreru;
+
+CREATE TABLE users (
+  user_id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  role ENUM('admin', 'user') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE posts (
+  post_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  user_id INT NOT NULL,
+  category_id INT NOT NULL,
+  status ENUM('draft', 'published') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+CREATE TABLE categories (
+  category_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  parent_id INT DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+  tag_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE post_tag (
+  post_id INT NOT NULL,
+  tag_id INT NOT NULL,
+  PRIMARY KEY (post_id, tag_id),
+  FOREIGN KEY (post_id) REFERENCES posts(post_id),
+  FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+);
+
+CREATE TABLE media (
+  media_id INT AUTO_INCREMENT PRIMARY KEY,
+  filename VARCHAR(255) NOT NULL,
+  file_type VARCHAR(50) NOT NULL,
+  file_size BIGINT NOT NULL,
+  user_id INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE activity_logs (
+  log_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  action VARCHAR(50) NOT NULL,
+  target_type VARCHAR(50) NOT NULL,
+  target_id INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);

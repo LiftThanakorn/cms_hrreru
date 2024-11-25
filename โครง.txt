@@ -1,0 +1,36 @@
+cms/
+├── index.php # Main entry point for the site
+├── auth/
+│   ├── login.php
+│   ├── logout.php
+│   ├── register.php
+├── assets/ # SB Admin 2
+│   ├── css.php 
+│   ├── img.php
+│   ├── js.php
+│   ├── scss.php
+│   ├── vendor.php
+├── admin/
+│   ├── index.php # Admin dashboard
+│   ├── user.php # User management
+│   ├── post.php # Post/article management 
+│   ├── categorys.php # Category management
+│   ├── tags.php # Tag management
+│   └── media.php # Media/file management
+│   └── includes/
+│       ├── header.php
+│       ├── footer.php
+│       └── sidebar.php # Shared admin sidebar
+├── user/
+│   ├── index.php # User dashboard
+│   ├── posts/ # User's posts
+│   ├── profile.php # User profile management
+│   └── includes/
+│       ├── header.php
+│       ├── footer.php
+│       └── sidebar.php # Shared user sidebar
+├── includes/
+│   ├── config.php # Global configuration
+│   └── 404.php # Custom 404 page
+└── logs/
+    └── activity_logs.php # Activity logging
